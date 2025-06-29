@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 智能填报年度总结</title>
+    <style>
+        /* ==================== 基础样式 ==================== */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 20px; 
+            background-color: #f4f7f6; 
+            color: #333; 
+            line-height: 1.6;
+        }
+        
+        /* 主容器样式 */
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background-color: #fff; 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+        }
+        
+        /* 标题样式 */
+        h1 { 
+            text-align: center; 
+            color: #007bff; 
+            margin-bottom: 30px; 
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        
+        /* 说明文字样式 */
+        .description {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .description p {
+            margin: 0;
+            color: #0056b3;
+        }
+        
+        /* 表单标签样式 */
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: bold; 
+            color: #555; 
+            font-size: 1.1em;
+        }
+        
+        /* 文本输入框样式 */
+        textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            margin-bottom: 15px; 
+            min-height: 200px; 
+            resize: vertical; 
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
+        }
+        
+        /* 文件上传输入框样式 */
+        input[type="file"] { 
+            margin-bottom: 15px; 
+            border: 1px solid #ccc; 
+            padding: 8px; 
+            border-radius: 5px; 
+            background-color: #f9f9f9; 
+            width: 100%; 
+            box-sizing: border-box; 
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        /* 提交按钮样式 */
+        button { 
+            background-color: #28a745; 
+            color: white; 
+            padding: 12px 25px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 18px; 
+            display: block; 
+            width: 100%; 
+            transition: background-color 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover { 
+            background-color: #218838; 
+        }
+        
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        /* 结果区域样式 */
+        .result-section { 
+            margin-top: 30px; 
+            text-align: center; 
+        }
+        
+        /* 加载提示样式 */
+        .loading { 
+            display: none; 
+            color: #007bff; 
+            font-size: 1.1em; 
+            padding: 15px;
+            background-color: #e7f3ff;
+            border-radius: 5px;
+            border: 1px solid #b3d9ff;
+        }
+        
+        /* 错误信息样式 */
+        .error { 
+            color: #dc3545; 
+            font-weight: bold; 
+            margin-top: 10px; 
+            display: none; 
+            padding: 15px;
+            background-color: #f8d7da;
+            border-radius: 5px;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* 下载链接样式 */
+        .download-link { 
+            display: none; 
+            margin-top: 20px; 
+        }
+        
+        .download-link a { 
+            background-color: #007bff; 
+            color: white; 
+            padding: 12px 25px; 
+            border-radius: 5px; 
+            text-decoration: none; 
+            font-size: 1.1em; 
+            display: inline-block;
+            transition: background-color 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .download-link a:hover { 
+            background-color: #0056b3; 
+        }
+        
+        /* 分隔线样式 */
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #ddd;
+        }
+        
+        .divider span {
+            background-color: white;
+            padding: 0 15px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <h1>🤖 AI 智能填报年度总结</h1>
+        
+        <!-- 功能说明 -->
+        <div class="description">
+            <p>
+                <strong>使用说明：</strong>
+                请提供您的工作内容、项目进展、个人思考等信息，AI将智能分析并为您生成专业的年度总结报告。
+                支持直接输入文本或上传 .txt/.docx 文件。
+            </p>
+        </div>
+        
+        <!-- 主表单 -->
+        <form id="summaryForm">
+            <!-- 文本输入区域 -->
+            <label for="textInput">💬 手动输入内容：</label>
+            <textarea 
+                id="textInput" 
+                name="text_input" 
+                placeholder="例如：
+今年我主要负责了A项目的开发工作，成功完成了系统架构设计和核心功能实现...
+在B项目中遇到了技术难题，通过深入研究和团队协作，最终找到了创新的解决方案...
+学习了新的技术栈，包括Python、机器学习等，并成功应用到实际项目中...
+明年计划继续深化技术能力，承担更多有挑战性的项目..."
+            ></textarea>
+
+            <!-- 分隔线 -->
+            <div class="divider">
+                <span>或者</span>
+            </div>
+
+            <!-- 文件上传区域 -->
+            <label for="fileInput">📁 上传文件（支持 .txt 或 .docx 格式）：</label>
+            <input type="file" id="fileInput" name="file" accept=".txt,.docx">
+
+            <!-- 提交按钮 -->
+            <button type="submit" id="submitBtn">🚀 生成年度总结</button>
+        </form>
+
+        <!-- 结果显示区域 -->
+        <div class="result-section">
+            <!-- 加载提示 -->
+            <div class="loading" id="loadingMessage">
+                <strong>🔄 AI 正在努力分析中，请稍候...</strong>
+                <br><small>通常需要10-30秒，请耐心等待</small>
+            </div>
+            
+            <!-- 错误信息 -->
+            <div class="error" id="errorMessage"></div>
+            
+            <!-- 下载链接 -->
+            <div class="download-link" id="downloadLink">
+                <a href="#" id="downloadBtn">📥 点击下载生成的年度总结</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript代码 -->
+    <script>
+        /**
+         * 页面加载完成后执行的初始化代码
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('AI年度总结生成器页面已加载');
+
+            // 获取页面元素的引用
+            const form = document.getElementById('summaryForm');
+            const textInput = document.getElementById('textInput');
+            const fileInput = document.getElementById('fileInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const downloadLink = document.getElementById('downloadLink');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            /**
+             * 重置页面状态
+             * 隐藏所有提示信息，清空错误消息
+             */
+            function resetPageState() {
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+                downloadLink.style.display = 'none';
+                errorMessage.textContent = '';
+                downloadBtn.removeAttribute('download');
+                downloadBtn.href = '#';
+            }
+
+            /**
+             * 显示错误信息
+             * @param {string} message - 错误消息
+             */
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                loadingMessage.style.display = 'none';
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 生成年度总结';
+            }
+
+            /**
+             * 显示加载状态
+             */
+            function showLoading() {
+                loadingMessage.style.display = 'block';
+                submitBtn.disabled = true;
+                submitBtn.textContent = '⏳ 处理中...';
+            }
+
+            /**
+             * 文件选择变化时的处理
+             * 当用户选择文件时，清空文本输入框
+             */
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    textInput.value = '';
+                    console.log('已选择文件:', this.files[0].name);
+                }
+            });
+
+            /**
+             * 文本输入变化时的处理
+             * 当用户在文本框输入时，清空文件选择
+             */
+            textInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    fileInput.value = '';
+                }
+            });
+
+            /**
+             * 表单提交处理函数
+             * 这是整个前端的核心逻辑
+             */
+            form.addEventListener('submit', async function(event) {
+                // 阻止表单的默认提交行为
+                event.preventDefault();
+
+                console.log('开始处理表单提交');
+
+                // 重置页面状态
+                resetPageState();
+
+                // 获取用户输入
+                const textValue = textInput.value.trim();
+                const selectedFile = fileInput.files[0];
+
+                // 验证用户输入
+                if (!textValue && !selectedFile) {
+                    showError('请至少输入一些内容或上传一个文件。');
+                    return;
+                }
+
+                // 验证文件类型（如果有文件）
+                if (selectedFile) {
+                    const fileName = selectedFile.name.toLowerCase();
+                    if (!fileName.endsWith('.txt') && !fileName.endsWith('.docx')) {
+                        showError('不支持的文件类型，请上传 .txt 或 .docx 文件。');
+                        return;
+                    }
+
+                    // 检查文件大小（限制为10MB）
+                    const maxSize = 10 * 1024 * 1024; // 10MB
+                    if (selectedFile.size > maxSize) {
+                        showError('文件大小超过限制，请上传小于10MB的文件。');
+                        return;
+                    }
+                }
+
+                // 显示加载状态
+                showLoading();
+
+                // 构造表单数据
+                const formData = new FormData();
+                if (selectedFile) {
+                    formData.append('file', selectedFile);
+                    console.log('准备上传文件:', selectedFile.name, '大小:', selectedFile.size, '字节');
+                } else {
+                    formData.append('text_input', textValue);
+                    console.log('准备发送文本，长度:', textValue.length, '字符');
+                }
+
+                try {
+                    console.log('正在发送请求到服务器...');
+
+                    // 发送POST请求到后端API
+                    const response = await fetch('/generate_summary', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    console.log('收到服务器响应，状态码:', response.status);
+
+                    if (response.ok) {
+                        // 请求成功，处理文件下载
+                        console.log('请求成功，准备下载文件');
+
+                        // 获取响应的二进制数据（Word文档）
+                        const blob = await response.blob();
+
+                        // 创建一个临时的下载URL
+                        const url = URL.createObjectURL(blob);
+                        downloadBtn.href = url;
+
+                        // 尝试从响应头获取文件名
+                        const contentDisposition = response.headers.get('Content-Disposition');
+                        let filename = '生成的年度总结.docx'; // 默认文件名
+
+                        if (contentDisposition) {
+                            // 解析Content-Disposition头部获取文件名
+                            const filenameMatch = contentDisposition.match(/filename\*?=(?:UTF-8'')?([^;]+)/);
+                            if (filenameMatch && filenameMatch[1]) {
+                                filename = decodeURIComponent(filenameMatch[1].replace(/%20/g, ' '));
+                                filename = filename.replace(/^"|"$/g, ''); // 移除可能的引号
+                            }
+                        }
+
+                        downloadBtn.download = filename;
+                        downloadLink.style.display = 'block';
+
+                        console.log('文件准备完成，文件名:', filename);
+
+                        // 隐藏加载状态，恢复按钮
+                        loadingMessage.style.display = 'none';
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '🚀 生成年度总结';
+
+                    } else {
+                        // 请求失败，显示错误信息
+                        console.log('请求失败，状态码:', response.status);
+
+                        try {
+                            const errorData = await response.json();
+                            showError(errorData.error || '生成失败，请稍后重试。');
+                        } catch (e) {
+                            showError('服务器响应格式错误，请稍后重试。');
+                        }
+                    }
+
+                } catch (error) {
+                    // 网络错误或其他异常
+                    console.error('请求过程中发生错误:', error);
+                    showError('网络请求失败，请检查网络连接或联系管理员。');
+                }
+            });
+
+            /**
+             * 下载按钮点击处理
+             * 在用户点击下载后清理临时URL
+             */
+            downloadBtn.addEventListener('click', function() {
+                // 延迟清理URL，确保下载能够完成
+                setTimeout(() => {
+                    if (this.href && this.href.startsWith('blob:')) {
+                        URL.revokeObjectURL(this.href);
+                        console.log('已清理临时下载URL');
+                    }
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

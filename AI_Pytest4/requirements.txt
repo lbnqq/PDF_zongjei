@@ -1,0 +1,15 @@
+# Web框架
+Flask==2.3.3
+
+# 文档处理库 - 用于读取和生成Word文档
+python-docx==1.1.0
+
+# WebSocket客户端 - 用于与科大讯飞星火大模型API通信
+websocket-client==1.7.0
+
+# 环境变量管理 - 用于加载.env文件中的配置
+python-dotenv==1.0.0
+
+# 以下是可能需要的额外依赖（根据实际情况添加）
+# requests==2.31.0  # HTTP请求库（如果需要REST API调用）
+# Pillow==10.0.0     # 图像处理库（如果需要处理图片）
